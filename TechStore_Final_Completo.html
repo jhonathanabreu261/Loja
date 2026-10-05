@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore - iPhones & PC Gamer</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #0b1220;
+            --background: #f1f5f9;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --radius: 18px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+
+        body {
+            background: radial-gradient(circle at top, #eaf2ff 0, var(--background) 430px);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        header {
+            background: rgba(255,255,255,.94);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px; margin: 0 auto; padding: 1rem 1.5rem;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .logo { font-size: 1.55rem; font-weight: 900; color: var(--secondary); text-decoration: none; }
+        .logo span { color: var(--primary); }
+
+        .cart-icon-btn {
+            background: var(--secondary); color: #fff; border: 0; border-radius: 12px;
+            font-size: 1.15rem; cursor: pointer; padding: .65rem .8rem; position: relative;
+            box-shadow: 0 6px 18px rgba(15,23,42,.15);
+        }
+
+        .cart-badge {
+            position: absolute; top: -6px; right: -6px; background: #ef4444; color: #fff;
+            font-size: .7rem; font-weight: 800; min-width: 19px; height: 19px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .hero {
+            max-width: 1200px; margin: 1.5rem auto 0; padding: 3.4rem 1.5rem;
+            border-radius: 28px; color: #fff; text-align: center; overflow: hidden;
+            background:
+                radial-gradient(circle at 20% 10%, rgba(59,130,246,.5), transparent 35%),
+                radial-gradient(circle at 80% 90%, rgba(14,165,233,.35), transparent 35%),
+                linear-gradient(135deg, #020617, #172554 55%, #1e40af);
+            box-shadow: 0 22px 50px rgba(30,64,175,.22);
+        }
+
+        .hero .tag {
+            display: inline-block; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+            padding: .35rem .75rem; border-radius: 999px; font-size: .78rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: .08em; margin-bottom: .8rem;
+        }
+
+        .hero h1 { font-size: clamp(2rem, 5vw, 3.25rem); line-height: 1.05; margin-bottom: .75rem; font-weight: 900; }
+        .hero p { color: #cbd5e1; font-size: 1.05rem; max-width: 650px; margin: auto; }
+
+        .trust-bar {
+            max-width: 1200px; margin: 1rem auto 0; padding: 0 1.5rem;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem;
+        }
+
+        .trust-item {
+            background: #fff; border: 1px solid var(--border); border-radius: 14px;
+            padding: .8rem; text-align: center; font-size: .85rem; font-weight: 700;
+            box-shadow: 0 5px 15px rgba(15,23,42,.04);
+        }
+
+        .container { max-width: 1200px; margin: 2.2rem auto; padding: 0 1.5rem; }
+        .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 1rem; margin-bottom: 1.2rem; }
+        .section-title { font-size: 1.7rem; color: var(--secondary); font-weight: 900; }
+        .section-subtitle { color: var(--text-light); font-size: .92rem; }
+
+        .products-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1.5rem;
+        }
+
+        .product-card {
+            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+            overflow: hidden; display: flex; flex-direction: column; position: relative;
+            transition: transform .2s ease, box-shadow .2s ease;
+            box-shadow: 0 8px 25px rgba(15,23,42,.06);
+        }
+
+        .product-card:hover { transform: translateY(-6px); box-shadow: 0 18px 35px rgba(15,23,42,.12); }
+
+        .product-image-wrap {
+            height: 300px; background: linear-gradient(145deg, #f8fafc, #e2e8f0);
+            display: flex; align-items: center; justify-content: center; padding: 1rem; position: relative;
+        }
+
+        .product-image {
+            width: 100%; height: 100%; object-fit: contain; display: block;
+            filter: drop-shadow(0 15px 12px rgba(15,23,42,.16));
+        }
+
+        .offer-badge {
+            position: absolute; top: 12px; left: 12px; z-index: 2;
+            background: #ef4444; color: white; padding: .35rem .6rem; border-radius: 999px;
+            font-size: .72rem; font-weight: 900; box-shadow: 0 6px 14px rgba(239,68,68,.25);
+        }
+
+        .product-info { padding: 1.3rem; min-height: 205px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-title { font-size: 1.08rem; font-weight: 850; color: var(--secondary); margin-bottom: .25rem; }
+        .product-spec { font-size: .9rem; line-height: 1.4; white-space: normal; overflow-wrap: anywhere; color: var(--text-light); margin-bottom: .75rem; }
+
+        .product-description {
+            font-size: .86rem; line-height: 1.45; color: #475569; margin: -.25rem 0 .9rem; min-height: 2.6em;
+        }
+
+        .price-label { color: var(--text-light); font-size: .75rem; }
+        .product-price { font-size: 1.45rem; font-weight: 950; color: var(--primary); margin: .05rem 0 .9rem; }
+
+        .btn-add {
+            background: linear-gradient(135deg, var(--primary), #3b82f6); color: white; border: none;
+            padding: .8rem; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%;
+            transition: transform .15s, box-shadow .15s;
+            box-shadow: 0 7px 16px rgba(37,99,235,.2);
+        }
+        .btn-add:hover { transform: translateY(-1px); box-shadow: 0 10px 20px rgba(37,99,235,.28); }
+
+        .cart-drawer {
+            position: fixed; top: 0; right: -420px; width: 100%; max-width: 400px; height: 100%;
+            background: var(--surface); box-shadow: -12px 0 35px rgba(0,0,0,.18);
+            transition: right .3s ease; z-index: 200; display: flex; flex-direction: column;
+        }
+        .cart-drawer.open { right: 0; }
+        .cart-header { padding: 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .cart-body { padding: 1.25rem; flex-grow: 1; overflow-y: auto; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+        .cart-footer { padding: 1.25rem; border-top: 1px solid var(--border); background: #f8fafc; }
+        .cart-total { display: flex; justify-content: space-between; font-weight: 900; font-size: 1.1rem; margin-bottom: 1rem; }
+        .close-btn { background: #f1f5f9; border: 0; border-radius: 9px; font-size: 1.5rem; cursor: pointer; width: 38px; height: 38px; }
+
+        .overlay { position: fixed; inset: 0; background: rgba(2,6,23,.5); display: none; z-index: 150; }
+        .overlay.active { display: block; }
+
+        footer {
+            background: var(--secondary); color: #94a3b8; padding: 2.5rem 1.5rem;
+            text-align: center; margin-top: 4rem; font-size: .85rem;
+        }
+
+        @media (max-width: 650px) {
+            .hero { margin: 0; border-radius: 0 0 24px 24px; }
+            .trust-bar { grid-template-columns: 1fr; }
+            .products-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .product-image-wrap { height: 240px; }
+            .product-info { padding: 1rem; min-height: 0; }
+            .product-title { font-size: 1.05rem; }
+            .product-price { font-size: 1.35rem; }
+            .section-heading { display: block; }
+        }
+
+        .reviews-section {
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            padding: 0 1.5rem;
+        }
+        .reviews-head {
+            text-align: center;
+            margin-bottom: 1.3rem;
+        }
+        .reviews-head h2 {
+            color: var(--secondary);
+            font-size: 1.7rem;
+            font-weight: 900;
+            margin-bottom: .3rem;
+        }
+        .reviews-head p {
+            color: var(--text-light);
+            font-size: .9rem;
+        }
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        .review-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.1rem;
+            box-shadow: 0 8px 22px rgba(15,23,42,.06);
+        }
+        .review-top {
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+            margin-bottom: .8rem;
+        }
+        .review-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: #e8f0ff;
+            font-weight: 900;
+            color: var(--primary);
+        }
+        .review-name { font-weight: 850; color: var(--secondary); }
+        .review-stars { color: #f59e0b; font-size: .85rem; }
+        .review-text { color: #475569; font-size: .9rem; }
+        .store-reply {
+            margin-top: .85rem;
+            padding: .75rem;
+            border-radius: 10px;
+            background: #f8fafc;
+            border-left: 3px solid var(--primary);
+            color: #475569;
+            font-size: .82rem;
+        }
+        .demo-note {
+            margin: 0 auto 1rem;
+            max-width: 760px;
+            padding: .65rem .8rem;
+            border-radius: 10px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #9a3412;
+            font-size: .78rem;
+            text-align: center;
+        }
+        @media (max-width: 800px) {
+            .reviews-grid { grid-template-columns: 1fr; }
+        }
+
+        #toast {
+            position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px);
+            background: #0f172a; color: #fff; padding: .75rem 1rem; border-radius: 10px;
+            box-shadow: 0 12px 30px rgba(0,0,0,.2); opacity: 0; pointer-events: none;
+            transition: .25s ease; z-index: 500; font-size: .88rem; font-weight: 700;
+        }
+        #toast.show { opacity: 1; transform: translate(-50%, 0); }
+    </style>
+
+<style id="techstore-review-avatar-style">
+.review-avatar{
+  width:42px;height:42px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  margin-right:10px;
+  font-weight:800;font-size:16px;
+  background:linear-gradient(135deg,#111827,#374151);
+  color:#fff;
+  vertical-align:middle;
+  box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+</style>
+
+
+<style id="sale-price-style">
+.old-price{font-size:.9em;text-decoration:line-through;opacity:.55;margin-right:7px}
+.sale-label{font-size:.78em;font-weight:800;color:#16a34a;margin-left:6px}
+</style>
+
+</head>
+<body>
+    <div id="toast"></div>
+
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo"><span>Tech</span>Store</a>
+            <button class="cart-icon-btn" onclick="toggleCart()">
+                🛒 <span class="cart-badge" id="cartBadge">0</span>
+            </button>
+        </div>
+    </header>
+
+    <section class="hero">
+        <span class="tag">🔥 Ofertas especiais</span>
+        <h1>Seu próximo iPhone está aqui</h1>
+        <p>Modelos selecionados, preços especiais e uma experiência de compra simples e segura.</p>
+    </section>
+
+    <div class="trust-bar">
+        <div class="trust-item">🚚 Envio para todo o Brasil</div>
+        <div class="trust-item">🔒 Pagamento seguro</div>
+        <div class="trust-item">📦 Produtos selecionados</div>
+    </div>
+
+    <main class="container">
+        <div class="section-heading">
+            <div>
+                <h2 class="section-title">iPhones em destaque</h2>
+                <p class="section-subtitle">Escolha seu aparelho e finalize o pedido.</p>
+            </div>
+        </div>
+        <div class="products-grid" id="productsGrid">
+            <!-- Produtos renderizados via JavaScript -->
+        </div>
+    </main>
+
+    <!-- Gaveta do Carrinho -->
+    <div class="overlay" id="overlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <h3>Seu Carrinho</h3>
+            <button class="close-btn" onclick="toggleCart()">&times;</button>
+        </div>
+        <div class="cart-body" id="cartBody">
+            <p style="color: var(--text-light);">O carrinho está vazio.</p>
+        </div>
+        <div class="cart-footer">
+            <div style="font-size:.75rem;color:var(--text-light);margin-bottom:.7rem;">🔒 Você será direcionado ao pagamento seguro.</div>
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">R$ 0,00</span>
+            </div>
+            <button class="btn-add" style="background-color:#10b981;" onclick="checkout()">Finalizar Pedido</button>
+        </div>
+    </div>
+
+
+    <section class="reviews-section">
+        <div class="reviews-head">
+            <h2>💬 O que nossos clientes dizem</h2>
+            <p>Confira exemplos de como a área de avaliações ficará no site.</p>
+        </div>
+
+        <div class="demo-note">
+            ⚠️ 
+        </div>
+
+        <div class="reviews-grid">
+            <article class="review-card">
+                <div class="review-top">
+                    <div class="review-avatar">M</div>
+                    <div>
+                        <div class="review-name">Marcos</div>
+                        <div class="review-stars">★★★★★</div>
+                    </div>
+                </div>
+                <div class="review-text">“Gostei muito do atendimento e o processo de compra foi bem simples.”</div>
+                <div class="store-reply"><strong>TechStore:</strong> Muito obrigado pela confiança, Marcos! Ficamos felizes em atender você. ❤️</div>
+            </article>
+
+            <article class="review-card">
+                <div class="review-top">
+                    <div class="review-avatar">J</div>
+                    <div>
+                        <div class="review-name">Juliana</div>
+                        <div class="review-stars">★★★★★</div>
+                    </div>
+                </div>
+                <div class="review-text">“O site é fácil de usar e consegui fazer meu pedido rapidinho.”</div>
+                <div class="store-reply"><strong>TechStore:</strong> Agradecemos muito pela compra e pela confiança, Juliana! 🙏</div>
+            </article>
+
+            <article class="review-card">
+                <div class="review-top">
+                    <div class="review-avatar">R</div>
+                    <div>
+                        <div class="review-name">Rafael</div>
+                        <div class="review-stars">★★★★★</div>
+                    </div>
+                </div>
+                <div class="review-text">“Achei a oferta interessante e gostei da facilidade para finalizar o pedido.”</div>
+                <div class="store-reply"><strong>TechStore:</strong> Obrigado pela preferência, Rafael! É um prazer ter você como cliente. 📱</div>
+            </article>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 TechStore - Todos os direitos reservados.</p>
+        <p style="margin-top:8px;">📸 <strong>@TechStore</strong> no Instagram</p>
+        <p style="margin-top:8px;">📸 Instagram: <strong>@TechStore</strong></p>
+    </footer>
+
+    <script>
+        const products = [
+            {
+                id: 1,
+                name: "iPhone XR",
+                spec: "128GB - Preto",
+                description: "iPhone XR • 128GB • Tela Liquid Retina • Face ID • Câmera de 12MP",
+                price: 500.00,
+                badge: "OFERTA",
+                paymentUrl: "https://invoice.infinitepay.io/jhonathan-aristides/5imtv8zG5k",
+                image: "https://commons.wikimedia.org/wiki/Special:FilePath/IPhone_XR_Product_Red_A1984_US_version_front.jpg"
+            },
+            {
+                id: 2,
+                name: "iPhone 11",
+                spec: "64GB - Preto",
+                description: "iPhone 11 • 64GB • Tela Liquid Retina • Face ID • Câmera dupla de 12MP",
+                price: 1000.00,
+                oldPrice: 1899.00,
+                badge: "DESCONTO",
+                paymentUrl: "https://invoice.infinitepay.io/jhonathan-aristides/2f9BDrtCtM",
+                image: "https://commons.wikimedia.org/wiki/Special:FilePath/IPhone_11.jpeg"
+            },
+            {
+                id: 3,
+                name: "iPhone 13",
+                spec: "128GB - Branco",
+                description: "iPhone 13 • 128GB • Tela Super Retina XDR • Face ID • Câmera dupla de 12MP",
+                price: 1000.00,
+                oldPrice: 2299.00,
+                badge: "DESCONTO",
+                paymentUrl: "https://invoice.infinitepay.io/jhonathan-aristides/2f9BDrtCtM",
+                image: "https://commons.wikimedia.org/wiki/Special:FilePath/IPhone_13.jpg"
+            },
+            {
+                id: 4,
+                name: "iPhone 14",
+                spec: "128GB - Meia-noite",
+                description: "iPhone 14 • 128GB • Tela Super Retina XDR • Face ID • Câmera dupla de 12MP",
+                price: 1000.00,
+                oldPrice: 2699.00,
+                badge: "DESCONTO",
+                paymentUrl: "https://invoice.infinitepay.io/jhonathan-aristides/2f9BDrtCtM",
+                image: "https://commons.wikimedia.org/wiki/Special:FilePath/IPhone_14_-_Starlight.jpg"
+            },
+            {
+                id: 5,
+                name: "iPhone 15",
+                spec: "128GB - Preto",
+                description: "iPhone 15 • 128GB • Tela Super Retina XDR • USB-C • Câmera dupla de 48MP",
+                price: 2000.00,
+                oldPrice: 2999.00,
+                badge: "DESCONTO",
+                paymentUrl: "https://invoice.infinitepay.io/jhonathan-aristides/BJgnwCydIM",
+                image: "https://commons.wikimedia.org/wiki/Special:FilePath/IPhone_15.jpg"
+            },
+            {
+                id: 6,
+                name: "PC Gamer Completo",
+                spec: "Setup Gamer Completo",
+                description: "PC Gamer completo • Alto desempenho • Ideal para jogos, trabalho e entretenimento",
+                price: 3000.00,
+                oldPrice: 5000.00,
+                badge: "OFERTA",
+                paymentUrl: "https://invoice.infinitepay.io/jhonathan-aristides/2f9BDrtCtM",
+                image: "https://commons.wikimedia.org/wiki/Special:FilePath/Informatique_gaming_pc.jpg"
+            }
+        ];
+
+        let cart = [];
+
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = products.map(product => `
+                <div class="product-card">
+                    <div class="product-image-wrap">
+                        ${product.badge ? `<span class="offer-badge">${product.badge}</span>` : ''}
+                        <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy"
+                             onerror="this.src='https://via.placeholder.com/500x500/f1f5f9/2563eb?text=iPhone'">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-title">${product.name}</div>
+                        <div class="product-spec">${product.spec}</div>
+                        <div class="product-description">${product.description || ""}</div>
+                        <div class="price-label">Por apenas</div>
+                        <div class="product-price">R$ ${product.price.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.55rem;">
+                            <button class="btn-add" onclick="addToCart(${product.id})">Adicionar</button>
+                            <button class="btn-add" style="background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 7px 16px rgba(16,185,129,.2);" onclick="buyNow(${product.id})">Comprar agora</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            cart.push(product);
+            updateCart();
+            toggleCart();
+        }
+
+        function updateCart() {
+            const badge = document.getElementById('cartBadge');
+            const cartBody = document.getElementById('cartBody');
+            const cartTotal = document.getElementById('cartTotal');
+
+            badge.textContent = cart.length;
+
+            if (cart.length === 0) {
+                cartBody.innerHTML = '<div style="text-align:center;padding:2rem 0;color:var(--text-light);"><div style="font-size:2rem;margin-bottom:.5rem;">🛒</div><strong>Seu carrinho está vazio</strong><p style="font-size:.85rem;margin-top:.25rem;">Adicione produtos para continuar.</p></div>';
+                cartTotal.textContent = 'R$ 0,00';
+                return;
+            }
+
+            let total = 0;
+            cartBody.innerHTML = cart.map((item, index) => {
+                total += item.price;
+                return `
+                    <div class="cart-item" style="gap:.7rem;">
+                        <div style="flex:1;">
+                            <strong>${item.name}</strong>
+                            <div style="font-size:.8rem;color:var(--text-light);margin-bottom:.45rem;">R$ ${item.price.toLocaleString('pt-BR', {minimumFractionDigits:2})}</div>
+                            <div style="display:flex;align-items:center;gap:.45rem;">
+                                <button onclick="changeQty(${index},-1)" style="border:1px solid var(--border);background:#fff;border-radius:7px;width:30px;height:30px;cursor:pointer;font-weight:900;">−</button>
+                                <span style="min-width:20px;text-align:center;font-weight:800;">1</span>
+                                <button onclick="changeQty(${index},1)" style="border:1px solid var(--border);background:#fff;border-radius:7px;width:30px;height:30px;cursor:pointer;font-weight:900;">+</button>
+                            </div>
+                        </div>
+                        <button onclick="removeFromCart(${index})" style="background:#fee2e2;border:0;border-radius:8px;color:#dc2626;cursor:pointer;padding:.45rem .55rem;font-weight:700;">Remover</button>
+                    </div>
+                `;
+            }).join('');
+
+            cartTotal.textContent = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+            showToast('Produto removido do carrinho');
+        }
+
+        function changeQty(index, delta) {
+            if (delta > 0) {
+                cart.push(cart[index]);
+            } else {
+                const item = cart[index];
+                const sameIndex = cart.findIndex(p => p.id === item.id);
+                if (sameIndex !== -1) cart.splice(sameIndex, 1);
+            }
+            updateCart();
+        }
+
+        function buyNow(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            window.location.href = product.paymentUrl;
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                showToast('Adicione um produto ao carrinho primeiro');
+                return;
+            }
+
+            // Quando houver apenas um produto, usa o link de pagamento específico dele.
+            if (cart.length === 1) {
+                window.location.href = cart[0].paymentUrl;
+                return;
+            }
+            // Para carrinhos com vários produtos, mantém o fluxo de pagamento padrão.
+            const allXR = cart.every(item => item.id === 1);
+            const paymentUrl = allXR ? "https://invoice.infinitepay.io/jhonathan-aristides/5imtv8zG5k" : "https://invoice.infinitepay.io/jhonathan-aristides/2f9BDrtCtM";
+            window.location.href = paymentUrl;
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            clearTimeout(window.__toastTimer);
+            window.__toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+        }
+
+        function toggleCart() {
+            document.getElementById('cartDrawer').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        renderProducts();
+    </script>
+</body>
+</html>
